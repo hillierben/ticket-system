@@ -34,7 +34,7 @@ app.use(express.static('./static'))
 // going to use Morgan instead, to log data about the request
 app.use(morgan('combined'))
 
-
+//
 
 app.get('/', (req, res) => {
   const blogs = [
