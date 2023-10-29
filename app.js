@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const Blog = require('./models/blog')
+
 
 const app = express();
 
@@ -32,20 +34,12 @@ app.set('view engine', 'ejs');
 app.use(express.static('./static'))
 
 // going to use Morgan instead, to log data about the request
-app.use(morgan('combined'))
+app.use(morgan('tiny'))
 
 
-
+// routes
 app.get('/', (req, res) => {
-  const blogs = [
-    {title: 'bob', role: ' dick', age: 5},
-    {title: 'crispin', role: ' gum', age: 6},
-    {title: 'trdfg', role: ' glirb', age: 7}
-  ]
-  res.render('index', {
-    title: 'Home',
-    blogs
-  });
+  res.redirect('/blogs');
 })
 
 app.get('/about', (req, res) => {
@@ -54,7 +48,22 @@ app.get('/about', (req, res) => {
   })
 })
 
-// redirect
+
+// blog routes
+app.get('/blogs', (req,res) => {
+  Blog.find().sort({ createdAt: -1})
+    .then((result) => {
+      res.render('index', {
+        title: 'Blogs',
+        blogs: result,
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+
 app.get('/blogs/create', (req, res) => {
   res.render('create', {
     title: 'Create'

@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema()
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 // the Schema is what describes the layout of Documents inside the mongo database. 
 // it states the name of each item, the TYPE of the item, and whether is is requires and any other 
