@@ -1,0 +1,34 @@
+<html>
+
+  <body>
+    <h1>Create</h1>
+    <%- include('./partials/nav.ejs') %>
+
+    <div>
+      <h1><%= blog.title %></h1>
+      <p><%= blog.role %></p>
+      <p><%= blog.age %></p>
+      <a href="delete" id='delete' data-doc="<%= blog._id %>">Delete</a>
+    </div>
+
+    <script>
+      // find the delete button and assign to variable
+      const trashcan = document.querySelector('#delete')
+
+      trashcan.addEventListener('click', (e) => {
+        const endpoint = `/blog/${trashcan.dataset.doc}`
+        
+        fetch(endpoint,  {
+          method: 'DELETE',           
+        })
+        .then((response) => response.json())
+        .then((data) => window.location.href = data.redirect)
+        .catch((err) => console.log(err))
+      })
+
+    </script>
+
+  </body>
+</html>
+
+

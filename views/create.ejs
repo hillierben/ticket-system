@@ -3,6 +3,13 @@
   <body>
     <h1>Create</h1>
     <%- include('./partials/nav.ejs') %>
+    <br>
+    <form action="/blogs" method="POST">
+      <input type="text" name="title" placeholder="title">
+      <input type="text" name="role" placeholder="role">
+      <input type="number" name="age" placeholder="age">
+      <input type="submit" >
+    </form>
   </body>
 </html>
 

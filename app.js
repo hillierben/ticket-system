@@ -19,20 +19,10 @@ mongoose.connect(dbURI)
 app.set('view engine', 'ejs');
 
 
-
-// app.use((req, res, next) => {
-//   console.log('new request made')
-//   console.log(`host: ${req.hostname}`)
-//   console.log(`path: ${req.path}`)
-//   console.log(`method: ${req.method}`)
-
-//   // you have to tell the server to move onto the next function, other wise it hangs
-//   next();
-// })
-
 // middleware - Add static files
 app.use(express.static('./static'))
-
+// need to use this middle to access POST / FORM data, eg, req.body
+app.use(express.urlencoded({ extended: true}))
 // going to use Morgan instead, to log data about the request
 app.use(morgan('tiny'))
 
@@ -63,6 +53,41 @@ app.get('/blogs', (req,res) => {
     })
 })
 
+app.post('/blogs', (req, res) => {
+  const blog = new Blog(req.body)
+  
+  blog.save()
+    .then((result) => {
+      res.redirect('/')
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+// :id allows you to input a parameter from the url, such as an ID
+app.get('/blog/:id', (req, res) => {
+  const id = req.params.id;
+  Blog.findById(id)
+    .then((result) => {
+      res.render('singleBlog', { blog: result, title: 'Blog Details'});
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
+
+app.delete('/blog/:id', (req, res) => {
+  const id = req.params.id;
+  console.log(id)
+  Blog.findByIdAndDelete(id)
+    .then((result) => {
+      res.json({redirect: '/blogs'});
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 
 app.get('/blogs/create', (req, res) => {
   res.render('create', {
