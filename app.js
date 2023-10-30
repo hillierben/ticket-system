@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
-const Blog = require('./models/blog')
+const blogRoutes = require('./routes/blogRoutes')
 
 
 const app = express();
@@ -39,61 +39,9 @@ app.get('/about', (req, res) => {
 })
 
 
-// blog routes
-app.get('/blogs', (req,res) => {
-  Blog.find().sort({ createdAt: -1})
-    .then((result) => {
-      res.render('index', {
-        title: 'Blogs',
-        blogs: result,
-      })
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
+// blog routes - this separates out the routes - better to modularise different routes
+app.use('/blogs', blogRoutes)
 
-app.post('/blogs', (req, res) => {
-  const blog = new Blog(req.body)
-  
-  blog.save()
-    .then((result) => {
-      res.redirect('/')
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
-
-// :id allows you to input a parameter from the url, such as an ID
-app.get('/blog/:id', (req, res) => {
-  const id = req.params.id;
-  Blog.findById(id)
-    .then((result) => {
-      res.render('singleBlog', { blog: result, title: 'Blog Details'});
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
-
-app.delete('/blog/:id', (req, res) => {
-  const id = req.params.id;
-  console.log(id)
-  Blog.findByIdAndDelete(id)
-    .then((result) => {
-      res.json({redirect: '/blogs'});
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-})
-
-app.get('/blogs/create', (req, res) => {
-  res.render('create', {
-    title: 'Create'
-  })
-})
 
 // use this function for every single request - if a previous get request is actioned, and a response is returned, then the code will not reach this point
 app.use((req, res) => {
